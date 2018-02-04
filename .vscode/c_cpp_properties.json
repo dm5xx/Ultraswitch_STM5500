@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
+                "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries",
+                "C:\\Users\\mmmedia\\Documents\\Arduino\\libraries",
+                "C:\\Users\\mmmedia\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\2.4.0\\libraries",
+                "C:\\Users\\mmmedia\\Documents\\Arduino\\hardware\\Arduino_STM32\\STM32F1\\cores\\maple"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false,
+                "path": [
+                    "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
+                    "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries",
+                    "C:\\Users\\mmmedia\\Documents\\Arduino\\libraries",
+                    "C:\\Users\\mmmedia\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\2.4.0\\libraries",
+                    "C:\\Users\\mmmedia\\Documents\\Arduino\\hardware\\Arduino_STM32\\STM32F1\\cores\\maple"
+                ]
+            },
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 3
+}
