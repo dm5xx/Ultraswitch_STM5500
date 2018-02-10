@@ -3,6 +3,7 @@
 
 // remove "//" to uncomment DEBUG-Mode 
 //#define DEBUG
+#define ULN_INVERT
 
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
 ;
@@ -25,7 +26,8 @@ boolean useOwnJquery = false;           // if all has to be under your own contr
 String customUrl;
 String contentUrl;
 
-int pinsOrder[16] = { 0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15 };
+//int pinsOrder[16] = { 0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15 };
+int pinsOrder[16] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 
 struct RelayCard
 {
@@ -84,7 +86,11 @@ void setup()
     for (int p = 0; p < 16; p++)
     {
       relayArray[a].mcp.pinMode(p, OUTPUT);
+#if defined ULN_INVERT
+      relayArray[a].mcp.digitalWrite(p, LOW);
+#else
       relayArray[a].mcp.digitalWrite(p, HIGH);
+#endif
       delay(20);
     }
   }    
@@ -183,17 +189,23 @@ void Webserver(){
             
             #if defined DEBUG
                   Serial.print("Pinstatus: ");
-                  Serial.println(relayArray[params[0]].pinStatus[params[1]]);
-            
+                  Serial.println(relayArray[params[0]].pinStatus[params[1]]);           
                   Serial.print("PinsNr: ");
                   Serial.println(relayArray[params[0]].pins[params[1]]);
             #endif
             
-            if(params[2] == 1) // write the correct pins
-              relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);
-            else
-              relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);      
-            }                       
+            #ifdef ULN_INVERT
+              if(params[2] == 1) // write the correct pins
+                 relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);
+              else
+                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);     
+            #else                  
+              if(params[2] == 1) // write the correct pins
+                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);
+              else
+              relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);     
+            #endif
+            }
             if(cmdSa>0)
             {
               for (int bits = 15; bits > -1; bits--) 
@@ -205,10 +217,17 @@ void Webserver(){
                 
                 relayArray[params[0]].pinStatus[bits] = value;
         
-                if(value == 1) // write the correct pins
-                  relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], LOW);
-                else
-                  relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], HIGH);         
+                #ifdef ULN_INVERT
+                  if(value == 1) // write the correct pins
+                    relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], HIGH);
+                  else
+                    relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], LOW);        
+                #else
+                  if(value == 1) // write the correct pins
+                    relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], LOW);
+                  else
+                    relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], HIGH);        
+                #endif
               }
             }
             client.println("Content-Type: application/json");
