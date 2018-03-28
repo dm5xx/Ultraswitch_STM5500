@@ -3,23 +3,31 @@
 
 // remove "//" to uncomment DEBUG-Mode 
 //#define DEBUG
-#define ULN_INVERT
-
-#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
-;
-#else
-  byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-#endif  
+//#define ULN_INVERT
+//
+//#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+//;
+//#else
+  byte mac[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
+//#endif  
 
 //////////////////////////////////////////////////////////////////// Change this IPs to your needs... /////////////////////////////////////
 int numberOfRelayBoards = 2;            // how many boars you want to use...
 
-IPAddress ip(192, 168, 1, 112);         // The IP Address you want to use...
+IPAddress ip(192, 168, 1, 155);         // The IP Address you want to use...
 IPAddress co(31, 31, 231, 42);          // Url where the .js and .css files are located!
+
+// the dns server ip
+IPAddress dnServer(192, 168, 1, 40);
+// the router's gateway address:
+IPAddress gateway(192, 168, 1, 40);
+// the subnet:
+IPAddress subnet(255, 255, 255, 0);
 
 boolean useOwnJquery = false;           // if all has to be under your own control, also jquery must be local...
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+unsigned long ctime;
 
 
 /////////////////////////////// Nothing to change below this line ////////////////////////////////////////////////////////////////////////
@@ -28,6 +36,7 @@ String contentUrl;
 
 //int pinsOrder[16] = { 0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15 };
 int pinsOrder[16] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+int isBoardInverted[8] = { 1,0,0,0,0,0,0,0 };
 
 struct RelayCard
 {
@@ -86,20 +95,19 @@ void setup()
     for (int p = 0; p < 16; p++)
     {
       relayArray[a].mcp.pinMode(p, OUTPUT);
-#if defined ULN_INVERT
-      relayArray[a].mcp.digitalWrite(p, LOW);
-#else
-      relayArray[a].mcp.digitalWrite(p, HIGH);
-#endif
+
+      if(isBoardInverted[a]==1)
+          relayArray[a].mcp.digitalWrite(p, LOW);
+      else      
+          relayArray[a].mcp.digitalWrite(p, HIGH);
       delay(20);
     }
   }    
 
-#if defined(WIZ550io_WITH_MACADDRESS)
-  Ethernet.begin(ip);
-#else
-  Ethernet.begin(mac, ip);
-#endif  
+//#if defined(WIZ550io_WITH_MACADDRESS)
+//  Ethernet.begin(ip);
+//#else
+  Ethernet.begin(mac, ip, dnServer, gateway, subnet);  
   server.begin();
 
 #if defined DEBUG
@@ -118,7 +126,26 @@ void Webserver(){
   if (client) {
     int charIndex = 0;
 
+  ctime = millis() + 500;  // time within to get reply
+    
+/*
+ctime = millis() + TIMEOUT_REPLY;  // time within to get reply
+while ( client.connected() )
+{
+    if ( millis()>ctime )   // if no answer received within the prescribed time
+        break;
+    while ( client.available() )
+        Time_ParseTCPData( client.read() );
+}
+client.stop();
+
+*/
+
     while (client.connected()) {
+
+      if ( millis()>ctime )   // if no answer received within the prescribed time
+        break;
+    
       if (client.available()) {
         char c = client.read();
 
@@ -194,17 +221,20 @@ void Webserver(){
                   Serial.println(relayArray[params[0]].pins[params[1]]);
             #endif
             
-            #ifdef ULN_INVERT
-              if(params[2] == 1) // write the correct pins
-                 relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);
+              if(isBoardInverted[params[0]]==1)
+              {
+                if(params[2] == 1) // write the correct pins
+                  relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);
               else
-                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);     
-            #else                  
-              if(params[2] == 1) // write the correct pins
-                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);
+                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);                
+              }            
               else
-              relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);     
-            #endif
+              {                  
+                if(params[2] == 1) // write the correct pins
+                  relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], LOW);
+                else
+                relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[params[1]], HIGH);     
+              }
             }
             if(cmdSa>0)
             {
@@ -217,17 +247,20 @@ void Webserver(){
                 
                 relayArray[params[0]].pinStatus[bits] = value;
         
-                #ifdef ULN_INVERT
+                if(isBoardInverted[params[0]]==1)
+                {
                   if(value == 1) // write the correct pins
                     relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], HIGH);
                   else
                     relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], LOW);        
-                #else
+                }
+                else
+                {
                   if(value == 1) // write the correct pins
                     relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], LOW);
                   else
                     relayArray[params[0]].mcp.digitalWrite(relayArray[params[0]].pins[bits], HIGH);        
-                #endif
+                }
               }
             }
             client.println("Content-Type: application/json");
