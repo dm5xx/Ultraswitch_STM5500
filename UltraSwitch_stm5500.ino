@@ -2,7 +2,7 @@
 #include <Ethernet_STM.h>
 
 // remove "//" to uncomment DEBUG-Mode 
-//#define DEBUG
+#define DEBUG
 //#define ULN_INVERT
 //
 //#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
@@ -113,6 +113,10 @@ void setup()
 #if defined DEBUG
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
+
+  Serial.print("server is: ");
+  Serial.println(server.available());
+
 #endif
 
 }

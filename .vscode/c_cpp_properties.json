@@ -19,7 +19,9 @@
                     "C:\\Users\\mmmedia\\Documents\\Arduino\\hardware\\Arduino_STM32\\STM32F1\\cores\\maple"
                 ]
             },
-            "intelliSenseMode": "msvc-x64"
+            "intelliSenseMode": "msvc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 3
