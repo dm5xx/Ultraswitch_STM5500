@@ -1,3 +1,6 @@
+// cc by DM5XX @ GNU GPLv3
+// LLAP! 
+
 #include "Adafruit_MCP23017.h"
 #include <Ethernet_STM.h>
 
