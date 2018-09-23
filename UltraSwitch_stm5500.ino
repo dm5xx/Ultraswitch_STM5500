@@ -2,17 +2,18 @@
 #include <Ethernet_STM.h>
 
 // remove "//" to uncomment DEBUG-Mode 
-#define DEBUG
+//#define DEBUG
 //#define ULN_INVERT
+#define DHCP
 //
 //#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
 //;
 //#else
-  byte mac[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
+  byte mac[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAB};
 //#endif  
 
 //////////////////////////////////////////////////////////////////// Change this IPs to your needs... /////////////////////////////////////
-int numberOfRelayBoards = 2;            // how many boars you want to use...
+int numberOfRelayBoards = 3;            // how many boars you want to use...
 
 IPAddress ip(192, 168, 1, 155);         // The IP Address you want to use...
 IPAddress co(31, 31, 231, 42);          // Url where the .js and .css files are located!
@@ -34,9 +35,9 @@ unsigned long ctime;
 String customUrl;
 String contentUrl;
 
-//int pinsOrder[16] = { 0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15 };
-int pinsOrder[16] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-int isBoardInverted[8] = { 1,0,0,0,0,0,0,0 };
+int pinsOrder[16] = { 0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15 };
+//int pinsOrder[16] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+int isBoardInverted[8] = { 0,0,0,0,0,0,0,0 };
 
 struct RelayCard
 {
@@ -63,9 +64,7 @@ char requestString[100];
 
 void setup()
 {
-#if defined DEBUG
   Serial.begin(115200);
-#endif
 
   for (int a = 0; a < 16; a++)
   {
@@ -104,20 +103,23 @@ void setup()
     }
   }    
 
-//#if defined(WIZ550io_WITH_MACADDRESS)
-//  Ethernet.begin(ip);
-//#else
+#if defined DHCP
+  Ethernet.begin(mac);
+
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    // no point in carrying on, so do nothing forevermore:
+    for(;;)
+      ;
+  }
+#else
   Ethernet.begin(mac, ip, dnServer, gateway, subnet);  
+#endif
+  delay(500);
   server.begin();
 
-#if defined DEBUG
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
-
-  Serial.print("server is: ");
-  Serial.println(server.available());
-
-#endif
 
 }
 
