@@ -12,11 +12,11 @@
 //#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
 //;
 //#else
-  byte mac[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAB};
+  byte mac[] = {0xAA, 0xAA, 0xAA, 0xAA, 0x01, 0x10}; // so u can call the device via dhcp an his name wiznetAA0110 (=last 3 bytes of the mac)
 //#endif  
 
 //////////////////////////////////////////////////////////////////// Change this IPs to your needs... /////////////////////////////////////
-int numberOfRelayBoards = 3;            // how many boars you want to use...
+int numberOfRelayBoards = 1;            // how many boars you want to use...
 
 IPAddress ip(192, 168, 1, 155);         // The IP Address you want to use...
 IPAddress co(31, 31, 231, 42);          // Url where the .js and .css files are located!

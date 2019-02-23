@@ -1,25 +1,17 @@
 {
+    "board": "Arduino_STM32:STM32F1:genericSTM32F103C",
+    "configuration": "device_variant=STM32F103C8,upload_method=serialMethod,cpu_speed=speed_72mhz,opt=osstd",
+    "port": "/dev/ttyUSB0",
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Linux",
             "includePath": [
-                "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
-                "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries",
-                "C:\\Users\\mmmedia\\Documents\\Arduino\\libraries",
-                "C:\\Users\\mmmedia\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\2.4.0\\libraries",
-                "C:\\Users\\mmmedia\\Documents\\Arduino\\hardware\\Arduino_STM32\\STM32F1\\cores\\maple"
+                "/home/werkstatt/Arduino/hardware/Arduino_STM32/STM32F1/**",
+                "/home/werkstatt/Arduino/libraries/**"
             ],
-            "browse": {
-                "limitSymbolsToIncludedHeaders": false,
-                "path": [
-                    "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266",
-                    "C:\\Users\\mmmedia\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\libraries",
-                    "C:\\Users\\mmmedia\\Documents\\Arduino\\libraries",
-                    "C:\\Users\\mmmedia\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\2.4.0\\libraries",
-                    "C:\\Users\\mmmedia\\Documents\\Arduino\\hardware\\Arduino_STM32\\STM32F1\\cores\\maple"
-                ]
-            },
-            "intelliSenseMode": "msvc-x64",
+            "forcedInclude": [],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }
